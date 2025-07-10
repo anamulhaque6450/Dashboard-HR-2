@@ -136,11 +136,39 @@ const Overview: React.FC<OverviewProps> = ({ setActiveSection }) => {
               <span>Add Employee</span>
             </button>
             <button 
+              onClick={() => handleNavigation('attendance')}
+              className="px-3 py-1.5 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-lg font-medium transition-all duration-200 hover:scale-105 flex items-center space-x-1 text-sm"
+            >
+              <Calendar className="h-3 w-3" />
+              <span>Attendance</span>
+            </button>
+            <button 
+              onClick={() => handleNavigation('payroll')}
+              className="px-3 py-1.5 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-lg font-medium transition-all duration-200 hover:scale-105 flex items-center space-x-1 text-sm"
+            >
+              <DollarSign className="h-3 w-3" />
+              <span>Payroll</span>
+            </button>
+            <button 
+              onClick={() => handleNavigation('recruitment')}
+              className="px-3 py-1.5 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-lg font-medium transition-all duration-200 hover:scale-105 flex items-center space-x-1 text-sm"
+            >
+              <UserCheck className="h-3 w-3" />
+              <span>Recruitment</span>
+            </button>
+            <button 
               onClick={() => handleNavigation('performance')}
               className="px-3 py-1.5 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-lg font-medium transition-all duration-200 hover:scale-105 flex items-center space-x-1 text-sm"
             >
               <BarChart3 className="h-3 w-3" />
-              <span>Analytics</span>
+              <span>Performance</span>
+            </button>
+            <button 
+              onClick={() => handleNavigation('training')}
+              className="px-3 py-1.5 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-lg font-medium transition-all duration-200 hover:scale-105 flex items-center space-x-1 text-sm"
+            >
+              <Award className="h-3 w-3" />
+              <span>Training</span>
             </button>
             <button 
               onClick={() => handleNavigation('notifications')}
@@ -148,6 +176,36 @@ const Overview: React.FC<OverviewProps> = ({ setActiveSection }) => {
             >
               <Bell className="h-3 w-3" />
               <span>Notifications</span>
+            </button>
+            <button 
+              onClick={() => {
+                // Generate and download report
+                const reportData = {
+                  generatedAt: new Date().toISOString(),
+                  totalEmployees,
+                  avgSalary,
+                  avgAttendance,
+                  avgPerformance,
+                  departmentBreakdown: Object.entries(departmentData),
+                  topPerformers: mockEmployees
+                    .sort((a, b) => b.performanceRating - a.performanceRating)
+                    .slice(0, 5)
+                    .map(emp => ({ name: emp.name, rating: emp.performanceRating, department: emp.department }))
+                };
+                const blob = new Blob([JSON.stringify(reportData, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `hr-report-${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+              }}
+              className="px-3 py-1.5 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-lg font-medium transition-all duration-200 hover:scale-105 flex items-center space-x-1 text-sm"
+            >
+              <FileText className="h-3 w-3" />
+              <span>Export Report</span>
             </button>
           </div>
         </div>
