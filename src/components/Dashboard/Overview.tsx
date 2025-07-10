@@ -2,7 +2,7 @@ import React from 'react';
 import MetricCard from '../Common/MetricCard';
 import Chart from '../Common/Chart';
 import { semanticColors, chartColors } from '../../styles/colors';
-import { Users, TrendingUp, Calendar, DollarSign, UserCheck, AlertTriangle, Clock, Award, Target, Activity, ChevronRight, Bell, FileText, BarChart3 } from 'lucide-react';
+import { Users, TrendingUp, Calendar, DollarSign, UserCheck, AlertTriangle, Clock, Award, Target, Activity, ChevronRight, Bell, FileText, BarChart3, Zap, Star, ArrowUpRight, ArrowDownRight, Eye, Plus } from 'lucide-react';
 import { mockEmployees, mockAttendanceData, mockRecruitmentData } from '../../data/mockData';
 
 interface OverviewProps {
@@ -86,303 +86,199 @@ const Overview: React.FC<OverviewProps> = ({ setActiveSection }) => {
     }
   };
 
-  // Action handlers
-  const handleAddEmployee = () => {
-    handleNavigation('employees');
-    // Could also open a modal for adding employee
-  };
-
-  const handleGenerateReport = () => {
-    // Generate and download a comprehensive report
-    const reportData = {
-      generatedAt: new Date().toISOString(),
-      totalEmployees,
-      avgSalary,
-      avgAttendance,
-      avgPerformance,
-      departmentBreakdown: Object.entries(departmentData),
-      topPerformers: mockEmployees
-        .sort((a, b) => b.performanceRating - a.performanceRating)
-        .slice(0, 5)
-        .map(emp => ({ name: emp.name, rating: emp.performanceRating, department: emp.department })),
-      alerts: {
-        upcomingReviews,
-        lowAttendance,
-        recentHires
-      }
-    };
-
-    const blob = new Blob([JSON.stringify(reportData, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `hr-report-${new Date().toISOString().split('T')[0]}.json`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-  };
-
-  const handlePerformanceReviews = () => {
-    handleNavigation('performance');
-  };
-
-  const handleAnalytics = () => {
-    // Could navigate to a dedicated analytics page or show analytics modal
-    alert('Analytics dashboard coming soon! This would show detailed insights and trends.');
-  };
-
-  const handleViewAllAlerts = () => {
-    handleNavigation('notifications');
-  };
-
-  const handleViewMoreHighlights = () => {
-    handleNavigation('employees');
-  };
-
-  const handleViewDepartmentDetails = () => {
-    handleNavigation('employees');
-  };
-
-  const handleAlertClick = (alertType: string) => {
-    switch (alertType) {
-      case 'reviews':
-        handleNavigation('performance');
-        break;
-      case 'attendance':
-        handleNavigation('attendance');
-        break;
-      case 'payroll':
-        handleNavigation('payroll');
-        break;
-      default:
-        handleNavigation('notifications');
-    }
-  };
-
-  const handleActivityClick = (activityType: string) => {
-    switch (activityType) {
-      case 'hires':
-        handleNavigation('employees');
-        break;
-      case 'performance':
-        handleNavigation('performance');
-        break;
-      case 'attendance':
-        handleNavigation('attendance');
-        break;
-      case 'recruitment':
-        handleNavigation('recruitment');
-        break;
-      default:
-        handleNavigation('notifications');
-    }
-  };
-
   return (
-    <div className="space-y-4 sm:space-y-6">
-      {/* Header with Welcome Message */}
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-4 sm:p-6 text-white shadow-lg hover:shadow-xl transition-shadow">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between space-y-4 sm:space-y-0">
-          <div>
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold drop-shadow-sm">Welcome back!</h1>
-            <p className="text-blue-100 mt-1 text-sm sm:text-base opacity-90">Here's what's happening with your team today</p>
-          </div>
-          <div className="flex items-center space-x-4">
-            <div className="text-right">
-              <div className="text-xs sm:text-sm text-blue-100 opacity-80">Today</div>
-              <div className="font-semibold text-sm sm:text-base drop-shadow-sm">{new Date().toLocaleDateString('en-US', { 
-                weekday: 'long',
-                month: 'short', 
-                day: 'numeric'
-              })}</div>
+    <div className="space-y-8">
+      {/* Enhanced Hero Section */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-700 to-purple-700 rounded-2xl p-8 text-white shadow-2xl">
+        <div className="absolute inset-0 bg-black/10"></div>
+        <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full -translate-y-48 translate-x-48"></div>
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-white/5 rounded-full translate-y-32 -translate-x-32"></div>
+        
+        <div className="relative z-10">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between space-y-6 lg:space-y-0">
+            <div className="space-y-4">
+              <div className="flex items-center space-x-3">
+                <div className="p-2 bg-white/20 rounded-lg backdrop-blur-sm">
+                  <Activity className="h-6 w-6" />
+                </div>
+                <span className="text-blue-100 font-medium">HR Dashboard</span>
+              </div>
+              <h1 className="text-3xl lg:text-4xl font-bold leading-tight">
+                Welcome back, Admin
+              </h1>
+              <p className="text-blue-100 text-lg max-w-2xl leading-relaxed">
+                Your team is performing exceptionally well. Here's a comprehensive overview of your organization's key metrics and insights.
+              </p>
             </div>
-            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm hover:bg-white/30 transition-colors">
-              <Activity className="h-5 w-5 sm:h-6 sm:w-6" />
+            
+            <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-6">
+              <div className="text-center">
+                <div className="text-3xl font-bold">{totalEmployees}</div>
+                <div className="text-blue-200 text-sm">Total Employees</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl font-bold">{avgAttendance}%</div>
+                <div className="text-blue-200 text-sm">Avg Attendance</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl font-bold">{avgPerformance.toFixed(1)}</div>
+                <div className="text-blue-200 text-sm">Performance</div>
+              </div>
+            </div>
+          </div>
+          
+          <div className="mt-8 flex flex-wrap gap-3">
+            <button 
+              onClick={() => handleNavigation('employees')}
+              className="px-6 py-3 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-xl font-medium transition-all duration-200 hover:scale-105 flex items-center space-x-2"
+            >
+              <Plus className="h-4 w-4" />
+              <span>Add Employee</span>
+            </button>
+            <button 
+              onClick={() => handleNavigation('performance')}
+              className="px-6 py-3 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-xl font-medium transition-all duration-200 hover:scale-105 flex items-center space-x-2"
+            >
+              <BarChart3 className="h-4 w-4" />
+              <span>View Analytics</span>
+            </button>
+            <button 
+              onClick={() => handleNavigation('notifications')}
+              className="px-6 py-3 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-xl font-medium transition-all duration-200 hover:scale-105 flex items-center space-x-2"
+            >
+              <Bell className="h-4 w-4" />
+              <span>Notifications</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Enhanced Key Metrics Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div onClick={() => handleNavigation('employees')} className="cursor-pointer group">
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-xl hover:border-blue-200 transition-all duration-300 group-hover:scale-105">
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg group-hover:shadow-blue-200">
+                <Users className="h-6 w-6 text-white" />
+              </div>
+              <div className={`flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-medium ${
+                calculateTrend(totalEmployees, prevTotalEmployees).isPositive 
+                  ? 'bg-green-100 text-green-700' 
+                  : 'bg-red-100 text-red-700'
+              }`}>
+                {calculateTrend(totalEmployees, prevTotalEmployees).isPositive ? (
+                  <ArrowUpRight className="h-3 w-3" />
+                ) : (
+                  <ArrowDownRight className="h-3 w-3" />
+                )}
+                <span>{Math.abs(calculateTrend(totalEmployees, prevTotalEmployees).value)}%</span>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <h3 className="text-sm font-medium text-gray-600 group-hover:text-gray-700">Total Employees</h3>
+              <p className="text-3xl font-bold text-gray-900 group-hover:text-blue-600">{totalEmployees}</p>
+              <p className="text-sm text-gray-500">{activeEmployees} active members</p>
+            </div>
+          </div>
+        </div>
+
+        <div onClick={() => handleNavigation('payroll')} className="cursor-pointer group">
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-xl hover:border-green-200 transition-all duration-300 group-hover:scale-105">
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg group-hover:shadow-green-200">
+                <DollarSign className="h-6 w-6 text-white" />
+              </div>
+              <div className={`flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-medium ${
+                calculateTrend(avgSalary, prevAvgSalary).isPositive 
+                  ? 'bg-green-100 text-green-700' 
+                  : 'bg-red-100 text-red-700'
+              }`}>
+                {calculateTrend(avgSalary, prevAvgSalary).isPositive ? (
+                  <ArrowUpRight className="h-3 w-3" />
+                ) : (
+                  <ArrowDownRight className="h-3 w-3" />
+                )}
+                <span>{Math.abs(calculateTrend(avgSalary, prevAvgSalary).value)}%</span>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <h3 className="text-sm font-medium text-gray-600 group-hover:text-gray-700">Average Salary</h3>
+              <p className="text-3xl font-bold text-gray-900 group-hover:text-green-600">${avgSalary.toLocaleString()}</p>
+              <p className="text-sm text-gray-500">Annual compensation</p>
+            </div>
+          </div>
+        </div>
+
+        <div onClick={() => handleNavigation('attendance')} className="cursor-pointer group">
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-xl hover:border-purple-200 transition-all duration-300 group-hover:scale-105">
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-lg group-hover:shadow-purple-200">
+                <Calendar className="h-6 w-6 text-white" />
+              </div>
+              <div className={`flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-medium ${
+                calculateTrend(avgAttendance, prevAvgAttendance).isPositive 
+                  ? 'bg-green-100 text-green-700' 
+                  : 'bg-red-100 text-red-700'
+              }`}>
+                {calculateTrend(avgAttendance, prevAvgAttendance).isPositive ? (
+                  <ArrowUpRight className="h-3 w-3" />
+                ) : (
+                  <ArrowDownRight className="h-3 w-3" />
+                )}
+                <span>{Math.abs(calculateTrend(avgAttendance, prevAvgAttendance).value)}%</span>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <h3 className="text-sm font-medium text-gray-600 group-hover:text-gray-700">Attendance Rate</h3>
+              <p className="text-3xl font-bold text-gray-900 group-hover:text-purple-600">{avgAttendance}%</p>
+              <p className="text-sm text-gray-500">This month average</p>
+            </div>
+          </div>
+        </div>
+
+        <div onClick={() => handleNavigation('performance')} className="cursor-pointer group">
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-xl hover:border-orange-200 transition-all duration-300 group-hover:scale-105">
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl shadow-lg group-hover:shadow-orange-200">
+                <TrendingUp className="h-6 w-6 text-white" />
+              </div>
+              <div className={`flex items-center space-x-1 px-3 py-1 rounded-full text-xs font-medium ${
+                calculateTrend(avgPerformance, prevAvgPerformance).isPositive 
+                  ? 'bg-green-100 text-green-700' 
+                  : 'bg-red-100 text-red-700'
+              }`}>
+                {calculateTrend(avgPerformance, prevAvgPerformance).isPositive ? (
+                  <ArrowUpRight className="h-3 w-3" />
+                ) : (
+                  <ArrowDownRight className="h-3 w-3" />
+                )}
+                <span>{Math.abs(calculateTrend(avgPerformance, prevAvgPerformance).value)}%</span>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <h3 className="text-sm font-medium text-gray-600 group-hover:text-gray-700">Performance Score</h3>
+              <p className="text-3xl font-bold text-gray-900 group-hover:text-orange-600">{avgPerformance.toFixed(1)}</p>
+              <p className="text-sm text-gray-500">Out of 5.0 rating</p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Quick Actions - Fully Responsive */}
-      <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        <button 
-          onClick={handleAddEmployee}
-          className="p-3 sm:p-4 rounded-xl hover:bg-white hover:shadow-md hover:border hover:border-blue-300 hover:scale-105 transition-all group w-full bg-gradient-to-br from-blue-50/50 to-blue-100/30"
-        >
-          <div className="flex items-center space-x-2 sm:space-x-3">
-            <div className="p-2 bg-blue-50 rounded-lg group-hover:bg-blue-100 group-hover:scale-110 transition-all flex-shrink-0">
-              <Users className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600 group-hover:text-blue-700" />
-            </div>
-            <div className="text-left min-w-0 flex-1">
-              <div className="text-xs sm:text-sm font-medium text-gray-900 truncate group-hover:text-gray-800">Add Employee</div>
-              <div className="text-xs text-gray-500 truncate group-hover:text-gray-600">Quick hire</div>
-            </div>
-          </div>
-        </button>
-        
-        <button 
-          onClick={handleGenerateReport}
-          className="p-3 sm:p-4 rounded-xl hover:bg-white hover:shadow-md hover:border hover:border-green-300 hover:scale-105 transition-all group w-full bg-gradient-to-br from-green-50/50 to-green-100/30"
-        >
-          <div className="flex items-center space-x-2 sm:space-x-3">
-            <div className="p-2 bg-green-50 rounded-lg group-hover:bg-green-100 group-hover:scale-110 transition-all flex-shrink-0">
-              <FileText className="h-4 w-4 sm:h-5 sm:w-5 text-green-600 group-hover:text-green-700" />
-            </div>
-            <div className="text-left min-w-0 flex-1">
-              <div className="text-xs sm:text-sm font-medium text-gray-900 truncate group-hover:text-gray-800">Generate Report</div>
-              <div className="text-xs text-gray-500 truncate group-hover:text-gray-600">Export data</div>
-            </div>
-          </div>
-        </button>
-        
-        <button 
-          onClick={handlePerformanceReviews}
-          className="p-3 sm:p-4 rounded-xl hover:bg-white hover:shadow-md hover:border hover:border-purple-300 hover:scale-105 transition-all group w-full bg-gradient-to-br from-purple-50/50 to-purple-100/30"
-        >
-          <div className="flex items-center space-x-2 sm:space-x-3">
-            <div className="p-2 bg-purple-50 rounded-lg group-hover:bg-purple-100 group-hover:scale-110 transition-all flex-shrink-0">
-              <Award className="h-4 w-4 sm:h-5 sm:w-5 text-purple-600 group-hover:text-purple-700" />
-            </div>
-            <div className="text-left min-w-0 flex-1">
-              <div className="text-xs sm:text-sm font-medium text-gray-900 truncate group-hover:text-gray-800">Performance</div>
-              <div className="text-xs text-gray-500 truncate group-hover:text-gray-600">Reviews</div>
-            </div>
-          </div>
-        </button>
-        
-        <button 
-          onClick={handleAnalytics}
-          className="p-3 sm:p-4 rounded-xl hover:bg-white hover:shadow-md hover:border hover:border-yellow-300 hover:scale-105 transition-all group w-full bg-gradient-to-br from-yellow-50/50 to-yellow-100/30"
-        >
-          <div className="flex items-center space-x-2 sm:space-x-3">
-            <div className="p-2 bg-yellow-50 rounded-lg group-hover:bg-yellow-100 group-hover:scale-110 transition-all flex-shrink-0">
-              <BarChart3 className="h-4 w-4 sm:h-5 sm:w-5 text-yellow-600 group-hover:text-yellow-700" />
-            </div>
-            <div className="text-left min-w-0 flex-1">
-              <div className="text-xs sm:text-sm font-medium text-gray-900 truncate group-hover:text-gray-800">Analytics</div>
-              <div className="text-xs text-gray-500 truncate group-hover:text-gray-600">View trends</div>
-            </div>
-          </div>
-        </button>
-      </div>
-
-      {/* Unified Metrics Section */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-6 flex items-center">
-          <TrendingUp className="h-5 w-5 mr-2 text-blue-500" />
-          Key Performance Metrics
-        </h3>
-        
-        {/* Primary Metrics */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div onClick={() => handleNavigation('employees')} className="cursor-pointer">
-          <MetricCard
-            title="Total Employees"
-            value={totalEmployees}
-            icon={Users}
-            trend={calculateTrend(totalEmployees, prevTotalEmployees)}
-            subtitle={`${activeEmployees} active`}
-          />
-        </div>
-        <div onClick={() => handleNavigation('payroll')} className="cursor-pointer">
-          <MetricCard
-            title="Average Salary"
-            value={`$${avgSalary.toLocaleString()}`}
-            icon={DollarSign}
-            trend={calculateTrend(avgSalary, prevAvgSalary)}
-          />
-        </div>
-        <div onClick={() => handleNavigation('attendance')} className="cursor-pointer">
-          <MetricCard
-            title="Avg Attendance"
-            value={`${avgAttendance}%`}
-            icon={Calendar}
-            trend={calculateTrend(avgAttendance, prevAvgAttendance)}
-          />
-        </div>
-        <div onClick={() => handleNavigation('performance')} className="cursor-pointer">
-          <MetricCard
-            title="Avg Performance"
-            value={avgPerformance.toFixed(1)}
-            icon={TrendingUp}
-            trend={calculateTrend(avgPerformance, prevAvgPerformance)}
-            subtitle="Out of 5.0"
-          />
-        </div>
-
-        {/* Secondary Metrics */}
-        <div className="border-t border-gray-100 pt-6">
-          <h4 className="text-sm font-medium text-gray-600 mb-4">Additional Insights</h4>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div onClick={() => handleNavigation('employees')} className="cursor-pointer">
-            <div className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-              <div className="flex items-center space-x-3">
-                <div className="p-2 bg-green-100 rounded-lg">
-                  <UserCheck className="h-4 w-4 text-green-600" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-900">{recentHires}</p>
-                  <p className="text-xs text-gray-600">Recent Hires</p>
-                </div>
-              </div>
-            </div>
-        </div>
-        <div onClick={() => handleNavigation('recruitment')} className="cursor-pointer">
-            <div className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-              <div className="flex items-center space-x-3">
-                <div className="p-2 bg-blue-100 rounded-lg">
-                  <Target className="h-4 w-4 text-blue-600" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-900">{openPositions}</p>
-                  <p className="text-xs text-gray-600">Open Positions</p>
-                </div>
-              </div>
-            </div>
-        </div>
-        <div onClick={() => handleNavigation('performance')} className="cursor-pointer">
-            <div className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-              <div className="flex items-center space-x-3">
-                <div className="p-2 bg-purple-100 rounded-lg">
-                  <Award className="h-4 w-4 text-purple-600" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-900">{highPerformers}</p>
-                  <p className="text-xs text-gray-600">High Performers</p>
-                </div>
-              </div>
-            </div>
-        </div>
-        <div onClick={() => handleNavigation('attendance')} className="cursor-pointer">
-            <div className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-              <div className="flex items-center space-x-3">
-                <div className="p-2 bg-red-100 rounded-lg">
-                  <AlertTriangle className="h-4 w-4 text-red-600" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-900">{lowAttendance}</p>
-                  <p className="text-xs text-gray-600">Needs Attention</p>
-                </div>
-              </div>
-            </div>
-        </div>
-          </div>
-        </div>
-        </div>
-      </div>
-
-      {/* Main Charts Section - Responsive Grid */}
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">
+      {/* Enhanced Charts Section */}
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
         {/* Weekly Attendance Chart */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 space-y-2 sm:space-y-0">
-            <h3 className="text-base sm:text-lg font-semibold text-gray-900">Weekly Attendance</h3>
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h3 className="text-xl font-bold text-gray-900">Weekly Attendance Trends</h3>
+              <p className="text-gray-500 mt-1">Employee presence over the last 7 days</p>
+            </div>
             <button 
               onClick={() => handleNavigation('attendance')}
-              className="text-xs sm:text-sm text-blue-600 hover:text-blue-800 transition-colors"
+              className="flex items-center space-x-2 px-4 py-2 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-xl transition-colors"
             >
-              View Details →
+              <Eye className="h-4 w-4" />
+              <span className="text-sm font-medium">View Details</span>
             </button>
           </div>
           <div className="w-full overflow-hidden">
@@ -417,62 +313,83 @@ const Overview: React.FC<OverviewProps> = ({ setActiveSection }) => {
                 }
               ]}
               type="line" 
-              height={280} 
+              height={320} 
             />
           </div>
-          <div className="mt-3 flex flex-wrap gap-2 text-xs text-gray-600">
-            <span className="flex items-center">
-              <div className="w-3 h-3 bg-green-500 rounded-full mr-1"></div>
-              Present
-            </span>
-            <span className="flex items-center">
-              <div className="w-3 h-3 bg-red-500 rounded-full mr-1"></div>
-              Absent
-            </span>
-            <span className="flex items-center">
-              <div className="w-3 h-3 bg-yellow-500 rounded-full mr-1"></div>
-              Late
-            </span>
+          <div className="mt-6 flex flex-wrap gap-4 text-sm">
+            <div className="flex items-center space-x-2">
+              <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+              <span className="text-gray-600">Present</span>
+              <span className="font-semibold text-gray-900">
+                {Math.round(mockAttendanceData.slice(-7).reduce((sum, item) => sum + item.present, 0) / 7)}
+              </span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+              <span className="text-gray-600">Absent</span>
+              <span className="font-semibold text-gray-900">
+                {Math.round(mockAttendanceData.slice(-7).reduce((sum, item) => sum + item.absent, 0) / 7)}
+              </span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+              <span className="text-gray-600">Late</span>
+              <span className="font-semibold text-gray-900">
+                {Math.round(mockAttendanceData.slice(-7).reduce((sum, item) => sum + item.late, 0) / 7)}
+              </span>
+            </div>
           </div>
         </div>
         
         {/* Team Highlights */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-base sm:text-lg font-semibold text-gray-900 flex items-center">
-              <Award className="h-5 w-5 mr-2 text-green-500" />
-              Team Highlights
-            </h3>
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h3 className="text-xl font-bold text-gray-900 flex items-center">
+                <Star className="h-5 w-5 mr-2 text-yellow-500" />
+                Top Performers
+              </h3>
+              <p className="text-gray-500 mt-1">Highest rated team members this month</p>
+            </div>
             <button 
-              onClick={handleViewMoreHighlights}
-              className="text-xs sm:text-sm text-blue-600 hover:text-blue-800 transition-colors"
+              onClick={() => handleNavigation('employees')}
+              className="flex items-center space-x-2 px-4 py-2 bg-green-50 hover:bg-green-100 text-green-600 rounded-xl transition-colors"
             >
-              View More
+              <Award className="h-4 w-4" />
+              <span className="text-sm font-medium">View All</span>
             </button>
           </div>
           <div className="space-y-4">
             {mockEmployees
               .sort((a, b) => b.performanceRating - a.performanceRating)
-              .slice(0, 3)
+              .slice(0, 4)
               .map((employee, index) => (
                 <button
                   key={employee.id}
                   onClick={() => handleNavigation('employees')}
-                  className="w-full flex items-center space-x-3 p-3 bg-green-50 rounded-lg hover:bg-green-100 transition-colors text-left"
+                  className="w-full flex items-center space-x-4 p-4 bg-gradient-to-r from-green-50 to-emerald-50 hover:from-green-100 hover:to-emerald-100 rounded-xl transition-all duration-200 text-left group hover:scale-102"
                 >
-                  <img
-                    src={employee.avatar}
-                    alt={employee.name}
-                    className="w-10 h-10 rounded-full object-cover flex-shrink-0"
-                  />
-                  <div className="flex-1 min-w-0">
-                    <div className="font-medium text-gray-900 truncate">{employee.name}</div>
-                    <div className="text-sm text-gray-600 truncate">{employee.department}</div>
+                  <div className="relative">
+                    <img
+                      src={employee.avatar}
+                      alt={employee.name}
+                      className="w-12 h-12 rounded-full object-cover ring-2 ring-white shadow-md"
+                    />
+                    <div className="absolute -top-1 -right-1 w-6 h-6 bg-yellow-400 rounded-full flex items-center justify-center text-xs font-bold text-white shadow-lg">
+                      {index + 1}
+                    </div>
                   </div>
-                  <div className="text-right flex-shrink-0">
-                    <div className="text-sm font-bold text-green-600">{employee.performanceRating.toFixed(1)}</div>
+                  <div className="flex-1 min-w-0">
+                    <div className="font-semibold text-gray-900 group-hover:text-green-700 transition-colors">{employee.name}</div>
+                    <div className="text-sm text-gray-600">{employee.department} • {employee.role}</div>
+                  </div>
+                  <div className="text-right">
+                    <div className="flex items-center space-x-1">
+                      <Star className="h-4 w-4 text-yellow-500 fill-current" />
+                      <span className="text-lg font-bold text-green-600">{employee.performanceRating.toFixed(1)}</span>
+                    </div>
                     <div className="text-xs text-gray-500">
-                      {index === 0 ? '🏆 Top' : index === 1 ? '🥈 2nd' : '🥉 3rd'}
+                      {employee.attendanceRate}% attendance
                     </div>
                   </div>
                 </button>
@@ -481,132 +398,157 @@ const Overview: React.FC<OverviewProps> = ({ setActiveSection }) => {
         </div>
       </div>
 
-      {/* Secondary Charts Section */}
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">
+      {/* Enhanced Secondary Charts */}
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
         {/* Performance by Department */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 space-y-2 sm:space-y-0">
-            <h3 className="text-base sm:text-lg font-semibold text-gray-900">Performance by Department</h3>
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h3 className="text-xl font-bold text-gray-900">Department Performance</h3>
+              <p className="text-gray-500 mt-1">Average performance ratings by department</p>
+            </div>
             <button 
               onClick={() => handleNavigation('performance')}
-              className="text-xs sm:text-sm text-blue-600 hover:text-blue-800 transition-colors"
+              className="flex items-center space-x-2 px-4 py-2 bg-purple-50 hover:bg-purple-100 text-purple-600 rounded-xl transition-colors"
             >
-              Analyze →
+              <BarChart3 className="h-4 w-4" />
+              <span className="text-sm font-medium">Analyze</span>
             </button>
           </div>
           <div className="w-full overflow-hidden">
-            <Chart data={performanceTrendData} type="bar" height={250} color={semanticColors.departments.marketing} />
+            <Chart data={performanceTrendData} type="bar" height={280} color={semanticColors.departments.marketing} />
           </div>
-          <div className="mt-3 text-xs text-gray-600">
-            <div className="flex items-center justify-between">
-              <span>Company Average:</span>
-              <span className="font-medium">{Math.round(avgPerformance * 20)}%</span>
+          <div className="mt-6 grid grid-cols-2 gap-4">
+            <div className="text-center p-3 bg-purple-50 rounded-lg">
+              <div className="text-lg font-bold text-purple-600">{Math.round(avgPerformance * 20)}%</div>
+              <div className="text-xs text-gray-600">Company Average</div>
+            </div>
+            <div className="text-center p-3 bg-green-50 rounded-lg">
+              <div className="text-lg font-bold text-green-600">{highPerformers}</div>
+              <div className="text-xs text-gray-600">Top Performers</div>
             </div>
           </div>
         </div>
 
         {/* Salary Distribution */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 space-y-2 sm:space-y-0">
-            <h3 className="text-base sm:text-lg font-semibold text-gray-900">Salary Distribution</h3>
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h3 className="text-xl font-bold text-gray-900">Salary Distribution</h3>
+              <p className="text-gray-500 mt-1">Employee compensation breakdown</p>
+            </div>
             <button 
               onClick={() => handleNavigation('payroll')}
-              className="text-xs sm:text-sm text-blue-600 hover:text-blue-800 transition-colors"
+              className="flex items-center space-x-2 px-4 py-2 bg-yellow-50 hover:bg-yellow-100 text-yellow-600 rounded-xl transition-colors"
             >
-              View Payroll →
+              <DollarSign className="h-4 w-4" />
+              <span className="text-sm font-medium">View Payroll</span>
             </button>
           </div>
           <div className="w-full overflow-hidden">
-            <Chart data={salaryDistributionData} type="line" height={250} color={semanticColors.status.warning} />
+            <Chart data={salaryDistributionData} type="line" height={280} color={semanticColors.status.warning} />
           </div>
-          <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
+          <div className="mt-6 grid grid-cols-2 gap-3">
             {salaryDistributionData.map((range, index) => (
-              <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded">
-                <span className="text-gray-700">{range.label}</span>
-                <span className="font-medium text-yellow-600">{range.value}</span>
+              <div key={index} className="flex items-center justify-between p-3 bg-yellow-50 rounded-lg">
+                <span className="text-sm font-medium text-gray-700">{range.label}</span>
+                <span className="text-lg font-bold text-yellow-600">{range.value}</span>
               </div>
             ))}
           </div>
         </div>
       </div>
 
-      {/* Alerts and Notifications */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-base sm:text-lg font-semibold text-gray-900 flex items-center">
-              <Bell className="h-5 w-5 mr-2 text-orange-500" />
-              Priority Alerts
-            </h3>
+      {/* Enhanced Alerts and Insights */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h3 className="text-xl font-bold text-gray-900 flex items-center">
+                <Zap className="h-5 w-5 mr-2 text-orange-500" />
+                Priority Alerts
+              </h3>
+              <p className="text-gray-500 mt-1">Items requiring immediate attention</p>
+            </div>
             <button 
-              onClick={handleViewAllAlerts}
-              className="text-xs sm:text-sm text-blue-600 hover:text-blue-800 transition-colors"
+              onClick={() => handleNavigation('notifications')}
+              className="flex items-center space-x-2 px-4 py-2 bg-orange-50 hover:bg-orange-100 text-orange-600 rounded-xl transition-colors"
             >
-              View All
+              <Bell className="h-4 w-4" />
+              <span className="text-sm font-medium">View All</span>
             </button>
           </div>
-          <div className="space-y-3">
+          <div className="space-y-4">
             {upcomingReviews > 0 && (
               <button 
-                onClick={() => handleAlertClick('reviews')}
-                className="w-full flex items-start space-x-3 p-3 bg-yellow-50/70 rounded-lg hover:bg-yellow-100 transition-colors text-left border-l-4 border-yellow-400"
+                onClick={() => handleNavigation('performance')}
+                className="w-full flex items-start space-x-4 p-4 bg-gradient-to-r from-yellow-50 to-orange-50 hover:from-yellow-100 hover:to-orange-100 rounded-xl transition-all text-left border-l-4 border-yellow-400 group"
               >
-                <AlertTriangle className="h-5 w-5 text-yellow-600 mt-0.5 flex-shrink-0" />
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-900">
-                    {upcomingReviews} employees need performance reviews
-                  </p>
-                  <p className="text-xs text-gray-600 mt-1">Schedule reviews to maintain performance standards</p>
+                <div className="p-2 bg-yellow-100 rounded-lg group-hover:bg-yellow-200 transition-colors">
+                  <AlertTriangle className="h-5 w-5 text-yellow-600" />
                 </div>
-                <ChevronRight className="h-4 w-4 text-gray-400 flex-shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-gray-900 group-hover:text-yellow-700">
+                    {upcomingReviews} Performance Reviews Due
+                  </p>
+                  <p className="text-sm text-gray-600 mt-1">Schedule reviews to maintain performance standards</p>
+                </div>
+                <ChevronRight className="h-5 w-5 text-gray-400 group-hover:text-yellow-600 transition-colors" />
               </button>
             )}
             
             {lowAttendance > 0 && (
               <button 
-                onClick={() => handleAlertClick('attendance')}
-                className="w-full flex items-start space-x-3 p-3 bg-red-50/70 rounded-lg hover:bg-red-100 transition-colors text-left border-l-4 border-red-400"
+                onClick={() => handleNavigation('attendance')}
+                className="w-full flex items-start space-x-4 p-4 bg-gradient-to-r from-red-50 to-pink-50 hover:from-red-100 hover:to-pink-100 rounded-xl transition-all text-left border-l-4 border-red-400 group"
               >
-                <Clock className="h-5 w-5 text-red-600 mt-0.5 flex-shrink-0" />
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-900">
-                    {lowAttendance} employees have low attendance
-                  </p>
-                  <p className="text-xs text-gray-600 mt-1">Consider reaching out for support or intervention</p>
+                <div className="p-2 bg-red-100 rounded-lg group-hover:bg-red-200 transition-colors">
+                  <Clock className="h-5 w-5 text-red-600" />
                 </div>
-                <ChevronRight className="h-4 w-4 text-gray-400 flex-shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-gray-900 group-hover:text-red-700">
+                    {lowAttendance} Employees with Low Attendance
+                  </p>
+                  <p className="text-sm text-gray-600 mt-1">Consider reaching out for support or intervention</p>
+                </div>
+                <ChevronRight className="h-5 w-5 text-gray-400 group-hover:text-red-600 transition-colors" />
               </button>
             )}
             
             <button 
-              onClick={() => handleAlertClick('payroll')}
-              className="w-full flex items-start space-x-3 p-3 bg-blue-50/70 rounded-lg hover:bg-blue-100 transition-colors text-left border-l-4 border-blue-400"
+              onClick={() => handleNavigation('payroll')}
+              className="w-full flex items-start space-x-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100 rounded-xl transition-all text-left border-l-4 border-blue-400 group"
             >
-              <FileText className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-900">
-                  Monthly payroll processing due in 3 days
-                </p>
-                <p className="text-xs text-gray-600 mt-1">Ensure all timesheets are submitted and approved</p>
+              <div className="p-2 bg-blue-100 rounded-lg group-hover:bg-blue-200 transition-colors">
+                <FileText className="h-5 w-5 text-blue-600" />
               </div>
-              <ChevronRight className="h-4 w-4 text-gray-400 flex-shrink-0" />
+              <div className="flex-1 min-w-0">
+                <p className="font-semibold text-gray-900 group-hover:text-blue-700">
+                  Monthly Payroll Due in 3 Days
+                </p>
+                <p className="text-sm text-gray-600 mt-1">Ensure all timesheets are submitted and approved</p>
+              </div>
+              <ChevronRight className="h-5 w-5 text-gray-400 group-hover:text-blue-600 transition-colors" />
             </button>
           </div>
         </div>
 
         {/* Quick Insights */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-base sm:text-lg font-semibold text-gray-900 flex items-center">
-              <BarChart3 className="h-5 w-5 mr-2 text-purple-500" />
-              Quick Insights
-            </h3>
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h3 className="text-xl font-bold text-gray-900 flex items-center">
+                <Target className="h-5 w-5 mr-2 text-purple-500" />
+                Key Insights
+              </h3>
+              <p className="text-gray-500 mt-1">Data-driven observations and trends</p>
+            </div>
           </div>
           <div className="space-y-4">
-            <div className="p-3 bg-purple-50/70 rounded-lg border-l-4 border-purple-400">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-gray-900">Department Performance</span>
-                <span className="text-sm font-bold text-purple-600">
+            <div className="p-4 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-xl border-l-4 border-purple-400">
+              <div className="flex items-center justify-between mb-2">
+                <span className="font-semibold text-gray-900">Top Department</span>
+                <span className="text-lg font-bold text-purple-600">
                   {Object.keys(departmentData).find(dept => {
                     const deptEmployees = mockEmployees.filter(emp => emp.department === dept);
                     const avgRating = deptEmployees.reduce((sum, emp) => sum + emp.performanceRating, 0) / deptEmployees.length;
@@ -614,44 +556,59 @@ const Overview: React.FC<OverviewProps> = ({ setActiveSection }) => {
                       const employees = mockEmployees.filter(emp => emp.department === d);
                       return employees.reduce((sum, emp) => sum + emp.performanceRating, 0) / employees.length;
                     }));
-                  })} leads
+                  })}
                 </span>
               </div>
-              <p className="text-xs text-gray-600 mt-1">Highest average performance rating</p>
+              <p className="text-sm text-gray-600">Highest average performance rating this quarter</p>
             </div>
             
-            <div className="p-3 bg-blue-50/70 rounded-lg border-l-4 border-blue-400">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-gray-900">Attendance Trend</span>
-                <span className="text-sm font-bold text-blue-600">↗ Improving</span>
+            <div className="p-4 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-xl border-l-4 border-blue-400">
+              <div className="flex items-center justify-between mb-2">
+                <span className="font-semibold text-gray-900">Attendance Trend</span>
+                <span className="text-lg font-bold text-blue-600 flex items-center">
+                  <ArrowUpRight className="h-4 w-4 mr-1" />
+                  Improving
+                </span>
               </div>
-              <p className="text-xs text-gray-600 mt-1">Weekly attendance showing positive trend</p>
+              <p className="text-sm text-gray-600">Weekly attendance showing consistent positive trend</p>
             </div>
             
-            <div className="p-3 bg-green-50/70 rounded-lg border-l-4 border-green-400">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-gray-900">Team Growth</span>
-                <span className="text-sm font-bold text-green-600">+{recentHires} this month</span>
+            <div className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border-l-4 border-green-400">
+              <div className="flex items-center justify-between mb-2">
+                <span className="font-semibold text-gray-900">Team Growth</span>
+                <span className="text-lg font-bold text-green-600">+{recentHires} this month</span>
               </div>
-              <p className="text-xs text-gray-600 mt-1">New team members successfully onboarded</p>
+              <p className="text-sm text-gray-600">New team members successfully onboarded</p>
+            </div>
+
+            <div className="p-4 bg-gradient-to-r from-yellow-50 to-amber-50 rounded-xl border-l-4 border-yellow-400">
+              <div className="flex items-center justify-between mb-2">
+                <span className="font-semibold text-gray-900">Open Positions</span>
+                <span className="text-lg font-bold text-yellow-600">{openPositions} active</span>
+              </div>
+              <p className="text-sm text-gray-600">Recruitment pipeline across multiple departments</p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Department Performance Details */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-base sm:text-lg font-semibold text-gray-900">Department Performance Overview</h3>
+      {/* Enhanced Department Overview */}
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h3 className="text-xl font-bold text-gray-900">Department Overview</h3>
+            <p className="text-gray-500 mt-1">Comprehensive breakdown of team performance and metrics</p>
+          </div>
           <button 
-            onClick={handleViewDepartmentDetails}
-            className="text-xs sm:text-sm text-blue-600 hover:text-blue-800 transition-colors flex items-center space-x-1"
+            onClick={() => handleNavigation('employees')}
+            className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl"
           >
-            <span>View Details</span>
+            <Users className="h-4 w-4" />
+            <span className="font-medium">View All Employees</span>
             <ChevronRight className="h-4 w-4" />
           </button>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {Object.entries(departmentData).map(([dept, count]) => {
             const deptEmployees = mockEmployees.filter(emp => emp.department === dept);
             const avgDeptSalary = Math.round(deptEmployees.reduce((sum, emp) => sum + emp.salary, 0) / count);
@@ -662,133 +619,47 @@ const Overview: React.FC<OverviewProps> = ({ setActiveSection }) => {
               <button
                 key={dept}
                 onClick={() => handleNavigation('employees')}
-                className="p-4 bg-gray-50/50 rounded-lg hover:bg-white hover:shadow-md transition-all hover:border hover:border-blue-300 text-left w-full"
+                className="p-6 bg-gradient-to-br from-gray-50 to-gray-100 hover:from-white hover:to-gray-50 rounded-xl hover:shadow-lg transition-all duration-200 hover:scale-105 text-left w-full border border-gray-200 hover:border-blue-300"
               >
-                <div className="flex items-center justify-between mb-3">
-                  <h4 className="font-medium text-gray-900 truncate">{dept}</h4>
-                  <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full flex-shrink-0">{count}</span>
+                <div className="flex items-center justify-between mb-4">
+                  <h4 className="font-bold text-gray-900 text-lg">{dept}</h4>
+                  <div className="flex items-center space-x-1 px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium">
+                    <Users className="h-3 w-3" />
+                    <span>{count}</span>
+                  </div>
                 </div>
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Avg Salary:</span>
-                    <span className="font-medium">${avgDeptSalary.toLocaleString()}</span>
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600">Avg Salary:</span>
+                    <span className="font-semibold text-gray-900">${avgDeptSalary.toLocaleString()}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Performance:</span>
-                    <span className="font-medium">{avgDeptPerformance.toFixed(1)}/5</span>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600">Performance:</span>
+                    <div className="flex items-center space-x-1">
+                      <Star className="h-3 w-3 text-yellow-500 fill-current" />
+                      <span className="font-semibold text-gray-900">{avgDeptPerformance.toFixed(1)}</span>
+                    </div>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Attendance:</span>
-                    <span className="font-medium">{avgDeptAttendance}%</span>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600">Attendance:</span>
+                    <span className="font-semibold text-gray-900">{avgDeptAttendance}%</span>
                   </div>
-                  <div className="mt-2 w-full bg-gray-200 rounded-full h-2">
-                    <div 
-                      className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-500"
-                      style={{ width: `${(avgDeptPerformance / 5) * 100}%` }}
-                    ></div>
+                  <div className="mt-4">
+                    <div className="flex justify-between text-xs text-gray-500 mb-1">
+                      <span>Performance Score</span>
+                      <span>{Math.round((avgDeptPerformance / 5) * 100)}%</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div 
+                        className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-500"
+                        style={{ width: `${(avgDeptPerformance / 5) * 100}%` }}
+                      ></div>
+                    </div>
                   </div>
                 </div>
               </button>
             );
           })}
-        </div>
-      </div>
-
-      {/* Recent Activity - Enhanced with Real Data */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-base sm:text-lg font-semibold text-gray-900">Recent Activity & Insights</h3>
-          <div className="text-xs text-gray-500">
-            Last updated: {new Date().toLocaleTimeString('en-US', { 
-              hour: '2-digit',
-              minute: '2-digit'
-            })}
-          </div>
-        </div>
-        <div className="space-y-3 sm:space-y-4">
-          <button 
-            onClick={() => handleActivityClick('hires')}
-            className="w-full flex items-start space-x-3 p-3 bg-blue-50/50 rounded-lg hover:bg-blue-100 transition-colors text-left border-l-4 border-blue-400"
-          >
-            <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-gray-900">
-                {recentHires} new employees joined this month
-              </p>
-              <p className="text-xs text-gray-500">
-                Latest: {mockEmployees
-                  .filter(emp => new Date(emp.joinDate) > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000))
-                  .sort((a, b) => new Date(b.joinDate).getTime() - new Date(a.joinDate).getTime())[0]?.name || 'None this month'}
-              </p>
-            </div>
-            <ChevronRight className="h-4 w-4 text-gray-400 mt-1 flex-shrink-0" />
-          </button>
-          
-          <button 
-            onClick={() => handleActivityClick('performance')}
-            className="w-full flex items-start space-x-3 p-3 bg-green-50/50 rounded-lg hover:bg-green-100 transition-colors text-left border-l-4 border-green-400"
-          >
-            <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-gray-900">
-                {highPerformers} employees with excellent performance ratings
-              </p>
-              <p className="text-xs text-gray-500">Top performer: {mockEmployees.sort((a, b) => b.performanceRating - a.performanceRating)[0]?.name}</p>
-            </div>
-            <ChevronRight className="h-4 w-4 text-gray-400 mt-1 flex-shrink-0" />
-          </button>
-          
-          <button 
-            onClick={() => handleActivityClick('attendance')}
-           className="w-full flex items-start space-x-3 p-3 bg-yellow-50/50 rounded-lg hover:bg-yellow-100 transition-colors text-left border-l-4 border-yellow-400"
-          >
-            <div className="w-2 h-2 bg-yellow-500 rounded-full mt-2 flex-shrink-0"></div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-gray-900">
-                {lowAttendance} employees need attendance improvement
-              </p>
-              <p className="text-xs text-gray-500">Average attendance: {avgAttendance}%</p>
-            </div>
-            <ChevronRight className="h-4 w-4 text-gray-400 mt-1 flex-shrink-0" />
-          </button>
-
-          <button 
-            onClick={() => handleActivityClick('recruitment')}
-          className="w-full flex items-start space-x-3 p-3 bg-purple-50/50 rounded-lg hover:bg-purple-100 transition-colors text-left border-l-4 border-purple-400"
-          >
-            <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-gray-900">
-                {openPositions} open positions across {new Set(mockRecruitmentData.filter(pos => pos.stage !== 'hired').map(pos => pos.department)).size} departments
-              </p>
-              <p className="text-xs text-gray-500">Priority hiring in progress</p>
-            </div>
-            <ChevronRight className="h-4 w-4 text-gray-400 mt-1 flex-shrink-0" />
-          </button>
-        </div>
-      </div>
-
-      {/* Department Distribution - Moved to bottom */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 space-y-2 sm:space-y-0">
-          <h3 className="text-base sm:text-lg font-semibold text-gray-900">Employee Distribution by Department</h3>
-          <button 
-            onClick={() => handleNavigation('employees')}
-            className="text-xs sm:text-sm text-blue-600 hover:text-blue-800 transition-colors"
-          >
-            View All Employees →
-          </button>
-        </div>
-        <div className="w-full overflow-hidden">
-          <Chart data={departmentChartData} type="bar" height={280} color={semanticColors.departments.engineering} />
-        </div>
-        <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 text-xs">
-          {Object.entries(departmentData).map(([dept, count]) => (
-            <div key={dept} className="flex items-center justify-between p-3 bg-gray-50/70 rounded-lg hover:bg-gray-100 transition-colors">
-              <span className="truncate text-gray-700 font-medium">{dept}</span>
-              <span className="font-bold text-blue-600">{count}</span>
-            </div>
-          ))}
         </div>
       </div>
     </div>
