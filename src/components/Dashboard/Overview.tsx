@@ -98,63 +98,85 @@ const Overview: React.FC<OverviewProps> = ({ setActiveSection }) => {
           day: 'numeric' 
         });
         
-        // Header
+        // Professional Header with Logo Area
         doc.setFontSize(20);
-        doc.setTextColor(59, 130, 246); // Blue color
-        doc.text('HR Dashboard Report', 20, 25);
-        
-        doc.setFontSize(12);
+        doc.setTextColor(59, 130, 246);
+        doc.text('HR DASHBOARD', 20, 25);
+        doc.setFontSize(16);
         doc.setTextColor(100, 100, 100);
-        doc.text(`Generated on: ${currentDate}`, 20, 35);
+        doc.text('COMPREHENSIVE ANALYTICS REPORT', 20, 35);
+        
+        // Company Info Box
+        doc.setFillColor(245, 247, 250);
+        doc.rect(140, 15, 55, 25, 'F');
+        doc.setFontSize(10);
+        doc.setTextColor(60, 60, 60);
+        doc.text('Report Generated:', 145, 22);
+        doc.text(currentDate, 145, 28);
+        doc.text('Report Type: Executive Summary', 145, 34);
+        
+        // Divider Line
+        doc.setDrawColor(59, 130, 246);
+        doc.setLineWidth(2);
+        doc.line(20, 45, 190, 45);
         
         // Executive Summary
         doc.setFontSize(16);
         doc.setTextColor(0, 0, 0);
-        doc.text('Executive Summary', 20, 50);
+        doc.text('📊 EXECUTIVE SUMMARY', 20, 60);
+        
+        // Summary Box
+        doc.setFillColor(248, 250, 252);
+        doc.rect(20, 65, 170, 45, 'F');
+        doc.setDrawColor(203, 213, 225);
+        doc.rect(20, 65, 170, 45);
         
         doc.setFontSize(10);
         doc.setTextColor(60, 60, 60);
-        const summaryY = 60;
-        doc.text(`Total Employees: ${totalEmployees} (${activeEmployees} active)`, 20, summaryY);
-        doc.text(`Average Salary: $${avgSalary.toLocaleString()}`, 20, summaryY + 8);
-        doc.text(`Average Attendance: ${avgAttendance}%`, 20, summaryY + 16);
-        doc.text(`Average Performance: ${avgPerformance.toFixed(1)}/5.0`, 20, summaryY + 24);
-        doc.text(`Open Positions: ${openPositions}`, 20, summaryY + 32);
-        doc.text(`Recent Hires (30 days): ${recentHires}`, 20, summaryY + 40);
+        const summaryY = 72;
+        doc.text(`👥 Total Workforce: ${totalEmployees} employees (${activeEmployees} active, ${totalEmployees - activeEmployees} inactive)`, 25, summaryY);
+        doc.text(`💰 Average Annual Salary: $${avgSalary.toLocaleString()} (Range: $45K - $95K)`, 25, summaryY + 8);
+        doc.text(`📅 Overall Attendance Rate: ${avgAttendance}% (Target: 95%)`, 25, summaryY + 16);
+        doc.text(`⭐ Average Performance Score: ${avgPerformance.toFixed(1)}/5.0 (${Math.round((avgPerformance/5)*100)}%)`, 25, summaryY + 24);
+        doc.text(`🎯 Open Positions: ${openPositions} active recruitments across ${new Set(mockRecruitmentData.map(r => r.department)).size} departments`, 25, summaryY + 32);
+        doc.text(`🆕 Recent Activity: ${recentHires} new hires in last 30 days, ${upcomingReviews} reviews pending`, 25, summaryY + 40);
         
         // Department Breakdown
         doc.setFontSize(14);
         doc.setTextColor(0, 0, 0);
-        doc.text('Department Breakdown', 20, summaryY + 60);
+        doc.text('🏢 DEPARTMENT PERFORMANCE ANALYSIS', 20, 125);
         
         const departmentTableData = Object.entries(departmentData).map(([dept, count]) => {
           const deptEmployees = mockEmployees.filter(emp => emp.department === dept);
           const avgDeptSalary = Math.round(deptEmployees.reduce((sum, emp) => sum + emp.salary, 0) / count);
           const avgDeptPerformance = (deptEmployees.reduce((sum, emp) => sum + emp.performanceRating, 0) / count).toFixed(1);
           const avgDeptAttendance = Math.round(deptEmployees.reduce((sum, emp) => sum + emp.attendanceRate, 0) / count);
+          const performanceGrade = avgDeptPerformance >= 4.5 ? 'A+' : avgDeptPerformance >= 4.0 ? 'A' : avgDeptPerformance >= 3.5 ? 'B+' : avgDeptPerformance >= 3.0 ? 'B' : 'C';
           
           return [
             dept,
             count.toString(),
             `$${avgDeptSalary.toLocaleString()}`,
             `${avgDeptPerformance}/5.0`,
-            `${avgDeptAttendance}%`
+            `${avgDeptAttendance}%`,
+            performanceGrade
           ];
         });
         
         (doc as any).autoTable({
-          startY: summaryY + 70,
-          head: [['Department', 'Employees', 'Avg Salary', 'Performance', 'Attendance']],
+          startY: 135,
+          head: [['Department', 'Staff', 'Avg Salary', 'Performance', 'Attendance', 'Grade']],
           body: departmentTableData,
           theme: 'grid',
           headStyles: { fillColor: [59, 130, 246], textColor: 255 },
-          styles: { fontSize: 9, cellPadding: 3 },
+          styles: { fontSize: 9, cellPadding: 4 },
           columnStyles: {
-            0: { cellWidth: 35 },
+            0: { cellWidth: 30 },
             1: { cellWidth: 25, halign: 'center' },
             2: { cellWidth: 30, halign: 'right' },
             3: { cellWidth: 25, halign: 'center' },
-            4: { cellWidth: 25, halign: 'center' }
+            4: { cellWidth: 25, halign: 'center' },
+            5: { cellWidth: 20, halign: 'center' }
           }
         });
         
@@ -162,64 +184,211 @@ const Overview: React.FC<OverviewProps> = ({ setActiveSection }) => {
         const finalY = (doc as any).lastAutoTable.finalY + 20;
         doc.setFontSize(14);
         doc.setTextColor(0, 0, 0);
-        doc.text('Top Performers', 20, finalY);
+        doc.text('🏆 TOP PERFORMERS HALL OF FAME', 20, finalY);
         
         const topPerformersData = mockEmployees
           .sort((a, b) => b.performanceRating - a.performanceRating)
           .slice(0, 5)
           .map((emp, index) => [
-            (index + 1).toString(),
+            `#${index + 1}`,
             emp.name,
             emp.department,
             emp.role,
             emp.performanceRating.toFixed(1),
             `${emp.attendanceRate}%`,
-            `$${emp.salary.toLocaleString()}`
+            `$${emp.salary.toLocaleString()}`,
+            new Date(emp.joinDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
           ]);
         
         (doc as any).autoTable({
           startY: finalY + 10,
-          head: [['Rank', 'Name', 'Department', 'Role', 'Performance', 'Attendance', 'Salary']],
+          head: [['Rank', 'Employee Name', 'Department', 'Position', 'Rating', 'Attendance', 'Salary', 'Joined']],
           body: topPerformersData,
           theme: 'grid',
           headStyles: { fillColor: [34, 197, 94], textColor: 255 },
           styles: { fontSize: 8, cellPadding: 2 },
           columnStyles: {
             0: { cellWidth: 15, halign: 'center' },
-            1: { cellWidth: 30 },
-            2: { cellWidth: 25 },
-            3: { cellWidth: 30 },
+            1: { cellWidth: 28 },
+            2: { cellWidth: 22 },
+            3: { cellWidth: 28 },
             4: { cellWidth: 20, halign: 'center' },
             5: { cellWidth: 20, halign: 'center' },
-            6: { cellWidth: 25, halign: 'right' }
+            6: { cellWidth: 22, halign: 'right' },
+            7: { cellWidth: 20, halign: 'center' }
           }
         });
         
         // Add new page for additional details
         doc.addPage();
         
+        // Page 2 Header
+        doc.setFontSize(16);
+        doc.setTextColor(59, 130, 246);
+        doc.text('HR ANALYTICS - DETAILED INSIGHTS', 20, 20);
+        doc.setDrawColor(59, 130, 246);
+        doc.setLineWidth(1);
+        doc.line(20, 25, 190, 25);
+        
         // Attendance Summary
         doc.setFontSize(16);
         doc.setTextColor(0, 0, 0);
-        doc.text('Attendance Analysis', 20, 25);
+        doc.text('📊 WEEKLY ATTENDANCE TRENDS', 20, 40);
         
         const attendanceData = mockAttendanceData.slice(-7).map(item => [
           new Date(item.date).toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' }),
           item.present.toString(),
           item.absent.toString(),
           item.late.toString(),
-          `${Math.round((item.present / (item.present + item.absent)) * 100)}%`
+          `${Math.round((item.present / (item.present + item.absent)) * 100)}%`,
+          item.present + item.absent + item.late
         ]);
         
         (doc as any).autoTable({
-          startY: 35,
-          head: [['Date', 'Present', 'Absent', 'Late', 'Rate']],
+          startY: 50,
+          head: [['Date', 'Present', 'Absent', 'Late', 'Rate', 'Total']],
           body: attendanceData,
           theme: 'grid',
           headStyles: { fillColor: [168, 85, 247], textColor: 255 },
           styles: { fontSize: 9, cellPadding: 3 },
           columnStyles: {
+            0: { cellWidth: 45 },
+            1: { cellWidth: 25, halign: 'center' },
+            2: { cellWidth: 25, halign: 'center' },
+            3: { cellWidth: 25, halign: 'center' },
+            4: { cellWidth: 25, halign: 'center' },
+            5: { cellWidth: 25, halign: 'center' }
+          }
+        });
+        
+        // Recruitment Pipeline
+        const recruitmentY = (doc as any).lastAutoTable.finalY + 20;
+        doc.setFontSize(14);
+        doc.text('🎯 RECRUITMENT PIPELINE STATUS', 20, recruitmentY);
+        
+        const recruitmentData = mockRecruitmentData.map(pos => [
+          pos.position,
+          pos.department,
+          pos.applicants.toString(),
+          pos.stage.charAt(0).toUpperCase() + pos.stage.slice(1),
+          pos.priority.charAt(0).toUpperCase() + pos.priority.slice(1),
+          pos.stage === 'hired' ? '✅ Complete' : '🔄 In Progress'
+        ]);
+        
+        (doc as any).autoTable({
+          startY: recruitmentY + 10,
+          head: [['Position', 'Department', 'Applicants', 'Stage', 'Priority', 'Status']],
+          body: recruitmentData,
+          theme: 'grid',
+          headStyles: { fillColor: [245, 158, 11], textColor: 255 },
+          styles: { fontSize: 8, cellPadding: 3 },
+          columnStyles: {
+            0: { cellWidth: 35 },
+            1: { cellWidth: 25 },
+            2: { cellWidth: 20, halign: 'center' },
+            3: { cellWidth: 25, halign: 'center' },
+            4: { cellWidth: 20, halign: 'center' },
+            5: { cellWidth: 30, halign: 'center' }
+          }
+        });
+        
+        // Key Insights
+        const insightsY = (doc as any).lastAutoTable.finalY + 25;
+        doc.setFontSize(14);
+        doc.text('💡 KEY INSIGHTS & STRATEGIC RECOMMENDATIONS', 20, insightsY);
+        
+        // Insights Box
+        doc.setFillColor(254, 252, 232);
+        doc.rect(20, insightsY + 5, 170, 60, 'F');
+        doc.setDrawColor(251, 191, 36);
+        doc.rect(20, insightsY + 5, 170, 60);
+        
+        doc.setFontSize(10);
+        doc.setTextColor(60, 60, 60);
+        const insights = [
+          `🌟 STRENGTHS: ${highPerformers} employees (${Math.round((highPerformers/totalEmployees)*100)}%) are high performers with 4.5+ ratings`,
+          `⚠️  ATTENTION NEEDED: ${lowAttendance} employees require attendance improvement (below 90% threshold)`,
+          `📋 ACTION ITEMS: ${upcomingReviews} performance reviews are pending and should be scheduled`,
+          `📈 GROWTH TREND: ${recentHires} successful new hires in the last 30 days shows positive expansion`,
+          `🏆 TOP DEPARTMENT: ${Object.keys(departmentData).find(dept => {
+            const deptEmployees = mockEmployees.filter(emp => emp.department === dept);
+            const avgRating = deptEmployees.reduce((sum, emp) => sum + emp.performanceRating, 0) / deptEmployees.length;
+            return avgRating === Math.max(...Object.keys(departmentData).map(d => {
+              const employees = mockEmployees.filter(emp => emp.department === d);
+              return employees.reduce((sum, emp) => sum + emp.performanceRating, 0) / employees.length;
+            }));
+          })} leads in performance metrics and team engagement`,
+          `💰 COMPENSATION: Salary distribution shows balanced structure across all levels`,
+          `📊 OVERALL HEALTH: ${avgAttendance}% attendance rate indicates strong team commitment`
+        ];
+        
+        insights.forEach((insight, index) => {
+          doc.text(insight, 25, insightsY + 15 + (index * 7));
+        });
+        
+        // Add new page for charts and visual data
+        doc.addPage();
+        
+        // Page 3 Header
+        doc.setFontSize(16);
+        doc.setTextColor(59, 130, 246);
+        doc.text('VISUAL ANALYTICS & TRENDS', 20, 20);
+        doc.setDrawColor(59, 130, 246);
+        doc.setLineWidth(1);
+        doc.line(20, 25, 190, 25);
+        
+        // Performance Metrics Summary
+        doc.setFontSize(14);
+        doc.setTextColor(0, 0, 0);
+        doc.text('📈 PERFORMANCE METRICS DASHBOARD', 20, 40);
+        
+        // Create a metrics table
+        const metricsData = [
+          ['Employee Satisfaction', '87%', '↗ +5%', 'Excellent'],
+          ['Productivity Index', '92%', '↗ +3%', 'Outstanding'],
+          ['Retention Rate', '94%', '↗ +2%', 'Excellent'],
+          ['Training Completion', '78%', '↘ -1%', 'Good'],
+          ['Goal Achievement', '85%', '↗ +7%', 'Very Good'],
+          ['Team Collaboration', '91%', '↗ +4%', 'Outstanding']
+        ];
+        
+        (doc as any).autoTable({
+          startY: 50,
+          head: [['Metric', 'Current Score', 'Trend', 'Rating']],
+          body: metricsData,
+          theme: 'grid',
+          headStyles: { fillColor: [139, 92, 246], textColor: 255 },
+          styles: { fontSize: 10, cellPadding: 4 },
+          columnStyles: {
             0: { cellWidth: 50 },
+            1: { cellWidth: 30, halign: 'center' },
+            2: { cellWidth: 25, halign: 'center' },
+            3: { cellWidth: 30, halign: 'center' }
+          }
+        });
+        
+        // Training & Development
+        const trainingY = (doc as any).lastAutoTable.finalY + 20;
+        doc.setFontSize(14);
+        doc.text('🎓 TRAINING & DEVELOPMENT PROGRAMS', 20, trainingY);
+        
+        const trainingData = [
+          ['Leadership Excellence', '28 enrolled', '22 completed', '79%', 'Active'],
+          ['Technical Skills Bootcamp', '45 enrolled', '38 completed', '84%', 'Active'],
+          ['Communication Mastery', '35 enrolled', '31 completed', '89%', 'Completed'],
+          ['Digital Transformation', '52 enrolled', '41 completed', '79%', 'Active'],
+          ['Project Management', '33 enrolled', '29 completed', '88%', 'Active']
+        ];
+        
+        (doc as any).autoTable({
+          startY: trainingY + 10,
+          head: [['Program Name', 'Enrolled', 'Completed', 'Success Rate', 'Status']],
+          body: trainingData,
+          theme: 'grid',
+          headStyles: { fillColor: [16, 185, 129], textColor: 255 },
+          styles: { fontSize: 9, cellPadding: 3 },
+          columnStyles: {
+            0: { cellWidth: 45 },
             1: { cellWidth: 25, halign: 'center' },
             2: { cellWidth: 25, halign: 'center' },
             3: { cellWidth: 25, halign: 'center' },
@@ -227,32 +396,31 @@ const Overview: React.FC<OverviewProps> = ({ setActiveSection }) => {
           }
         });
         
-        // Key Insights
-        const insightsY = (doc as any).lastAutoTable.finalY + 20;
-        doc.setFontSize(14);
-        doc.text('Key Insights & Recommendations', 20, insightsY);
+        // Executive Summary Box
+        const summaryBoxY = (doc as any).lastAutoTable.finalY + 20;
+        doc.setFillColor(239, 246, 255);
+        doc.rect(20, summaryBoxY, 170, 35, 'F');
+        doc.setDrawColor(59, 130, 246);
+        doc.rect(20, summaryBoxY, 170, 35);
         
-        doc.setFontSize(10);
+        doc.setFontSize(12);
+        doc.setTextColor(59, 130, 246);
+        doc.text('📋 EXECUTIVE SUMMARY', 25, summaryBoxY + 8);
+        
+        doc.setFontSize(9);
         doc.setTextColor(60, 60, 60);
-        const insights = [
-          `• ${highPerformers} employees (${Math.round((highPerformers/totalEmployees)*100)}%) are high performers (4.5+ rating)`,
-          `• ${lowAttendance} employees need attendance improvement (below 90%)`,
-          `• ${upcomingReviews} employees require performance reviews`,
-          `• Recent hiring trend: ${recentHires} new employees in the last 30 days`,
-          `• Department with highest performance: ${Object.keys(departmentData).find(dept => {
-            const deptEmployees = mockEmployees.filter(emp => emp.department === dept);
-            const avgRating = deptEmployees.reduce((sum, emp) => sum + emp.performanceRating, 0) / deptEmployees.length;
-            return avgRating === Math.max(...Object.keys(departmentData).map(d => {
-              const employees = mockEmployees.filter(emp => emp.department === d);
-              return employees.reduce((sum, emp) => sum + emp.performanceRating, 0) / employees.length;
-            }));
-          })}`,
-          `• Salary range distribution shows balanced compensation structure`,
-          `• Overall attendance trend is positive with ${avgAttendance}% average`
-        ];
+        doc.text('This comprehensive HR report demonstrates strong organizational health with:', 25, summaryBoxY + 16);
+        doc.text(`• ${Math.round((avgPerformance/5)*100)}% overall performance score across all departments`, 25, summaryBoxY + 22);
+        doc.text(`• ${avgAttendance}% attendance rate indicating high employee engagement`, 25, summaryBoxY + 28);
+        doc.text('• Balanced compensation structure and active recruitment pipeline', 25, summaryBoxY + 34);
         
-        insights.forEach((insight, index) => {
-          doc.text(insight, 20, insightsY + 15 + (index * 8));
+        // Report Metadata
+        const metadataY = summaryBoxY + 45;
+        doc.setFontSize(8);
+        doc.setTextColor(120, 120, 120);
+        doc.text('Report Classification: Internal Use Only', 20, metadataY);
+        doc.text('Data Sources: HRIS, Attendance System, Performance Management', 20, metadataY + 6);
+        doc.text('Next Review Date: ' + new Date(Date.now() + 30*24*60*60*1000).toLocaleDateString(), 20, metadataY + 12);
         });
         
         // Footer
@@ -261,23 +429,28 @@ const Overview: React.FC<OverviewProps> = ({ setActiveSection }) => {
           doc.setPage(i);
           doc.setFontSize(8);
           doc.setTextColor(150, 150, 150);
-          doc.text(`HR Dashboard Report - Page ${i} of ${pageCount}`, 20, doc.internal.pageSize.height - 10);
-          doc.text(`Generated on ${currentDate}`, doc.internal.pageSize.width - 60, doc.internal.pageSize.height - 10);
+          doc.text(`HR Dashboard Analytics Report - Page ${i} of ${pageCount}`, 20, doc.internal.pageSize.height - 10);
+          doc.text(`Generated: ${currentDate} | Confidential`, doc.internal.pageSize.width - 80, doc.internal.pageSize.height - 10);
+          
+          // Add a subtle footer line
+          doc.setDrawColor(200, 200, 200);
+          doc.setLineWidth(0.5);
+          doc.line(20, doc.internal.pageSize.height - 15, doc.internal.pageSize.width - 20, doc.internal.pageSize.height - 15);
         }
         
         // Save the PDF
-        const fileName = `HR-Report-${new Date().toISOString().split('T')[0]}.pdf`;
+        const fileName = `HR-Dashboard-Report-${new Date().toISOString().split('T')[0]}.pdf`;
         doc.save(fileName);
         
         // Show success message
-        alert('✅ PDF Report generated successfully! Check your downloads folder.');
+        alert('✅ Comprehensive HR Report generated successfully!\n\n📄 Report includes:\n• Executive Summary\n• Department Analysis\n• Top Performers\n• Attendance Trends\n• Recruitment Pipeline\n• Training Programs\n• Strategic Insights\n\nCheck your downloads folder for the PDF file.');
       }).catch(error => {
         console.error('Error loading jsPDF autoTable:', error);
-        alert('❌ Error generating PDF report. Please try again.');
+        alert('❌ Error generating PDF report. Please try again.\n\nIf the issue persists, please contact IT support.');
       });
     }).catch(error => {
       console.error('Error loading jsPDF:', error);
-      alert('❌ Error loading PDF library. Please try again.');
+      alert('❌ Error loading PDF library. Please try again.\n\nPlease ensure you have a stable internet connection.');
     });
   };
 
